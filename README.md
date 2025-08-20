@@ -13,53 +13,34 @@ A Rust-based command-line tool that generates QR codes for WiFi network connecti
 
 ## Development Roadmap
 
-### Phase 1: Core Setup and Dependencies
-- [ ] Set up Rust project structure with Cargo.toml and dependencies
-- [ ] Add QR code generation library dependency (qrcode crate)
-- [ ] Add image handling dependencies (image crate for PNG/JPEG output)
-- [ ] Add command line argument parsing (clap crate)
+  Critical Missing Features:
+  - No unit or integration tests
+  - Missing error correction level options
+  - No batch processing capabilities
+  - Limited output format support
 
-### Phase 2: Core WiFi QR Code Functionality
-- [ ] Create WiFi configuration struct to hold SSID, password, security type
-- [ ] Implement WiFi QR code format string generation (WIFI:T:WPA;S:ssid;P:password;;)
-- [ ] Create QR code generation function that takes WiFi config and returns QR code
-- [ ] Add support for hidden network flag in WiFi QR format
+  Performance Opportunities:
+  - QR code object caching for batch operations
+  - Memory optimization for large image generation
+  - Parallel processing implementation
+  - Streaming for large files
 
-### Phase 3: User Interface
-- [ ] Implement command line interface for SSID input
-- [ ] Implement command line interface for password input (with secure input option)
-- [ ] Implement command line interface for security type selection (WPA/WPA2/WEP/Open)
-- [ ] Add proper error handling and user-friendly error messages
+  Security & Validation Gaps:
+  - Password strength validation missing
+  - Secure password input not implemented
+  - Limited input validation beyond basic escaping
 
-### Phase 4: Output Formats and Customization
-- [ ] Implement PNG image output functionality
-- [ ] Implement SVG output functionality for scalable graphics
-- [ ] Add terminal/console ASCII art QR code display option
-- [ ] Add customizable QR code size options
-- [ ] Add error correction level options (Low, Medium, Quartile, High)
-- [ ] Implement file output with custom filename support
+  User Experience Enhancements:
+  - Configuration file support
+  - Template system for common networks
+  - Progress indicators for operations
+  - Clipboard integration
+  - Better terminal rendering
 
-### Phase 5: Advanced Features
-- [ ] Add color customization options for QR code foreground/background
-- [ ] Implement quiet zones and border options for QR code output
-- [ ] Add support for reading WiFi config from file (JSON/TOML)
-- [ ] Implement batch processing for multiple WiFi networks
-- [ ] Implement logging for debugging and verbose output options
-
-### Phase 6: Input Validation and Security
-- [ ] Implement input validation for SSID (length limits, special characters)
-- [ ] Implement input validation for password strength and requirements
-
-### Phase 7: Testing and Quality Assurance
-- [ ] Create comprehensive unit tests for WiFi format generation
-- [ ] Create integration tests for QR code generation
-- [ ] Add cross-platform compatibility testing
-- [ ] Optimize performance for large batch operations
-
-### Phase 8: Documentation and Distribution
-- [ ] Add documentation with usage examples and help text
-- [ ] Add version information and build metadata
-- [ ] Create installation and build instructions
+  Protocol & Standards:
+  - WPA3-SAE proper implementation
+  - WiFi profile export formats
+  - QR code verification functionality
 
 ## Getting Started
 

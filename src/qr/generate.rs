@@ -3,6 +3,7 @@ use crate::types::ValidatedFilePath;
 use qrcode::QrCode;
 use image::Luma;
 use std::io;
+use std::str::FromStr;
 
 #[derive(Debug)]
 pub enum GenerateError {
@@ -53,6 +54,9 @@ pub fn gen_qr(wifi_struct: WifiQr, output: Option<ValidatedFilePath>, terminal: 
     
     if let Some(output_path) = output {
         save_qr_to_file(&code, &wifi_struct, &output_path)?;
+    } else {
+        let default_path = generate_default_filename()?;
+        save_qr_to_file(&code, &wifi_struct, &default_path)?;
     }
     
     Ok(())
@@ -65,6 +69,38 @@ fn display_qr_terminal(code: &QrCode) {
         .build();
     
     println!("{}", string);
+}
+
+fn generate_default_filename() -> Result<ValidatedFilePath, GenerateError> {
+    let mut counter = 0;
+    let base_name = "qr_code";
+    let extension = "png";
+    let current_dir = std::env::current_dir()?;
+    
+    loop {
+        let filename = if counter == 0 {
+            format!("{}.{}", base_name, extension)
+        } else {
+            format!("{}{}.{}", base_name, counter, extension)
+        };
+        
+        let path = current_dir.join(&filename);
+        
+        if !path.exists() {
+            return ValidatedFilePath::from_str(&path.to_string_lossy()).map_err(|e| {
+                GenerateError::IoError(io::Error::new(io::ErrorKind::InvalidInput, e))
+            });
+        }
+        
+        counter += 1;
+        
+        if counter > 1000 {
+            return Err(GenerateError::IoError(io::Error::new(
+                io::ErrorKind::AlreadyExists,
+                "Too many existing qr_code files, cannot generate unique filename"
+            )));
+        }
+    }
 }
 
 fn save_qr_to_file(code: &QrCode, wifi_struct: &WifiQr, output_path: &ValidatedFilePath) -> Result<(), GenerateError> {

@@ -5,7 +5,7 @@ use crate::types::{SecurityType,ValidatedFilePath};
 #[command(name = "wifi-qr")]
 #[command(about = "Generates Commands For WIFI Networks")]
 #[command(version)]
-struct Cli {
+pub struct Cli {
     #[command(subcommand)]
     pub command: Commands
 }

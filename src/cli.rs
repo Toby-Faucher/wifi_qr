@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use crate::types::SecurityType;
+use crate::types::{SecurityType,ValidatedFilePath};
 
 #[derive(Parser)]
 #[command(name = "wifi-qr")]
@@ -24,9 +24,8 @@ pub enum Commands {
         #[arg(short = 't', long, default_value = "wpa2")]
         security: SecurityType,
 
-        //TODO: Make file path type (or find one)
         #[arg(short,long)]
-        output: Option<String>,
+        output: Option<ValidatedFilePath>,
         
         #[arg(long,default_value = "256")]
         size: u32,

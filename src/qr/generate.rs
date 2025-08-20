@@ -4,6 +4,33 @@ use qrcode::QrCode;
 use image::Luma;
 use std::io;
 use std::str::FromStr;
+use std::path::Path;
+use std::fs;
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum OutputFormat {
+    Png,
+    Svg,
+}
+
+impl OutputFormat {
+    pub fn from_path<P: AsRef<Path>>(path: P) -> Self {
+        match path.as_ref().extension().and_then(|ext| ext.to_str()) {
+            Some(ext) => match ext.to_lowercase().as_str() {
+                "svg" => OutputFormat::Svg,
+                _ => OutputFormat::Png,
+            },
+            None => OutputFormat::Png,
+        }
+    }
+    
+    pub fn extension(&self) -> &'static str {
+        match self {
+            OutputFormat::Png => "png",
+            OutputFormat::Svg => "svg",
+        }
+    }
+}
 
 #[derive(Debug)]
 pub enum GenerateError {
@@ -72,9 +99,13 @@ fn display_qr_terminal(code: &QrCode) {
 }
 
 fn generate_default_filename() -> Result<ValidatedFilePath, GenerateError> {
+    generate_default_filename_with_format(OutputFormat::Png)
+}
+
+fn generate_default_filename_with_format(format: OutputFormat) -> Result<ValidatedFilePath, GenerateError> {
     let mut counter = 0;
     let base_name = "qr_code";
-    let extension = "png";
+    let extension = format.extension();
     let current_dir = std::env::current_dir()?;
     
     loop {
@@ -104,11 +135,25 @@ fn generate_default_filename() -> Result<ValidatedFilePath, GenerateError> {
 }
 
 fn save_qr_to_file(code: &QrCode, wifi_struct: &WifiQr, output_path: &ValidatedFilePath) -> Result<(), GenerateError> {
-    let image = code.render::<Luma<u8>>()
-        .max_dimensions(wifi_struct.size, wifi_struct.size)
-        .build();
+    let format = OutputFormat::from_path(output_path.as_ref());
     
-    image.save(output_path)?;
+    match format {
+        OutputFormat::Png => {
+            let image = code.render::<Luma<u8>>()
+                .max_dimensions(wifi_struct.size, wifi_struct.size)
+                .build();
+            
+            image.save(output_path)?;
+        },
+        OutputFormat::Svg => {
+            let svg_string = code.render::<qrcode::render::svg::Color>()
+                .max_dimensions(wifi_struct.size, wifi_struct.size)
+                .build();
+            
+            fs::write(output_path.as_ref(), svg_string)?;
+        }
+    }
+    
     println!("QR code saved to: {}", output_path.as_ref().display());
     
     Ok(())

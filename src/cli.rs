@@ -1,6 +1,5 @@
 use clap::{Parser, Subcommand};
-mod types;
-mod cli;
+use crate::types::SecurityType;
 
 #[derive(Parser)]
 #[command(name = "wifi-qr")]
@@ -22,9 +21,8 @@ pub enum Commands {
         #[arg(short,long)]
         password: Option<String>,
 
-        //TODO: Implement std::clone::Clone
-        // #[arg(short = 't',long, default_value = "wpa2")]
-        // security: SecurityType,
+        #[arg(short = 't', long, default_value = "wpa2")]
+        security: SecurityType,
 
         //TODO: Make file path type (or find one)
         #[arg(short,long)]
@@ -35,17 +33,5 @@ pub enum Commands {
 
         #[arg(long)]
         hidden: bool,
-    }
-}
-
-
-
-fn main() {
-    let cli = Cli::parse();
-
-    match cli.command {
-        Commands::Generate { ssid, password, /* security, */ output, size, hidden} => {
-            //TODO: Input Validation
-        }
     }
 }

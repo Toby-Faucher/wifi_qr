@@ -38,3 +38,9 @@ impl FromStr for ValidatedFilePath {
        Ok(ValidatedFilePath(path))
    }
 }
+
+impl AsRef<std::path::Path> for ValidatedFilePath {
+    fn as_ref(&self) -> &std::path::Path {
+        &self.0
+    }
+}

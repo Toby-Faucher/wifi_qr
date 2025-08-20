@@ -31,5 +31,8 @@ pub enum Commands {
 
         #[arg(long)]
         hidden: bool,
+
+        #[arg(long)]
+        terminal: bool,
     }
 }

@@ -1,7 +1,8 @@
+mod cli;
+mod types;
+mod qr;
 use crate::cli::{Cli, Commands};
 use clap::Parser;
-mod types;
-mod cli;
 
 fn main() {
     let cli = Cli::parse();
@@ -9,6 +10,7 @@ fn main() {
     match cli.command {
         Commands::Generate { ssid, password, security, output, size, hidden} => {
             //TODO: Input Validation
+            todo!()
         }
     }
 }

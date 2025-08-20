@@ -14,7 +14,6 @@ pub struct Cli {
 #[derive(Subcommand)]
 pub enum Commands {
     Generate {
-
         #[arg(short,long)]
         ssid: String,
 

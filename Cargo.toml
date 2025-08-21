@@ -7,3 +7,5 @@ edition = "2024"
 clap = { version = "4.0", features = ["derive"] }
 image = "0.25.6"
 qrcode = { version = "0.14.1", features = ["svg"] }
+schematic = "0.18.12"
+serde = "1.0.219"

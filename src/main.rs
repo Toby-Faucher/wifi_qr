@@ -1,5 +1,6 @@
 mod cli;
 mod types;
+mod config;
 mod qr;
 use crate::cli::{Cli, Commands};
 use crate::qr::{WifiQr, gen_qr};

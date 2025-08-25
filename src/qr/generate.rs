@@ -1,5 +1,5 @@
 use crate::qr::wifi::WifiQr;
-use crate::types::ValidatedFilePath;
+use crate::types::{ErrorCorrectionLevel, ValidatedFilePath};
 use qrcode::QrCode;
 use image::Luma;
 use std::io;
@@ -69,9 +69,10 @@ impl From<io::Error> for GenerateError {
     }
 }
 
-pub fn gen_qr(wifi_struct: WifiQr, output: Option<ValidatedFilePath>, terminal: Option<bool>) -> Result<(), GenerateError> {
+pub fn gen_qr(wifi_struct: WifiQr, output: Option<ValidatedFilePath>, terminal: Option<bool>, ec_level: Option<ErrorCorrectionLevel>) -> Result<(), GenerateError> {
     let wifi_string = wifi_struct.to_qr_string();
-    let code = QrCode::new(wifi_string)?;
+    let error_correction = ec_level.unwrap_or_default();
+    let code = QrCode::with_error_correction_level(wifi_string, error_correction.to_ec_level())?;
     
     let should_display_terminal = terminal.unwrap_or(false);
     

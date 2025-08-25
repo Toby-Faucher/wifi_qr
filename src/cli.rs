@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use crate::types::{SecurityType,ValidatedFilePath};
+use crate::types::{SecurityType, ValidatedFilePath, ErrorCorrectionLevel};
 
 #[derive(Parser)]
 #[command(name = "wifi-qr")]
@@ -34,5 +34,8 @@ pub enum Commands {
 
         #[arg(long)]
         terminal: bool,
+
+        #[arg(short = 'c', long)]
+        error_correction: ErrorCorrectionLevel, 
     }
 }

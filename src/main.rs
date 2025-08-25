@@ -20,11 +20,11 @@ fn main() {
     };
 
     match cli.command {
-        Commands::Generate { ssid, password, security, output, size, hidden, terminal} => {
+        Commands::Generate { ssid, password, security, output, size, hidden, terminal, error_correction} => {
             let wifi_struct = WifiQr::new(ssid, password, security, size, hidden);
             match wifi_struct {
                 Ok(wifi_qr) => {
-                    if let Err(e) = gen_qr(wifi_qr, output, Some(terminal)) {
+                    if let Err(e) = gen_qr(wifi_qr, output, Some(terminal), Some(error_correction)) {
                         eprintln!("Error generating QR code: {}", e);
                     }
                 }

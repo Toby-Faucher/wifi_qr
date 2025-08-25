@@ -1,4 +1,5 @@
 use clap::{ValueEnum};
+use qrcode::EcLevel;
 use std::path::PathBuf;
 use std::str::FromStr;
 
@@ -12,6 +13,19 @@ pub enum SecurityType {
     Wpa2,
     #[value(name = "wpa3")]
     Wpa3,
+}
+
+#[derive(Clone, Debug, Default, ValueEnum)]    
+pub enum ErrorCorrectionLevel {
+    #[value(name = "low", alias = "l")]
+    Low,
+    #[value(name = "medium", alias = "m")]
+    #[default]
+    Medium,
+    #[value(name = "quartile", alias = "q")]
+    Quartile,
+    #[value(name = "high", alias = "h")]
+    High,
 }
 
 #[derive(Clone,Debug)]
@@ -42,5 +56,43 @@ impl FromStr for ValidatedFilePath {
 impl AsRef<std::path::Path> for ValidatedFilePath {
     fn as_ref(&self) -> &std::path::Path {
         &self.0
+    }
+}
+
+impl ErrorCorrectionLevel {
+    pub fn to_ec_level(self) -> EcLevel {
+        match self {
+            ErrorCorrectionLevel::Low => EcLevel::L,
+            ErrorCorrectionLevel::Medium => EcLevel::M,
+            ErrorCorrectionLevel::Quartile => EcLevel::Q,
+            ErrorCorrectionLevel::High => EcLevel::H,
+        }
+    }
+}
+
+impl FromStr for ErrorCorrectionLevel {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
+            "l" | "low" => Ok(ErrorCorrectionLevel::Low),
+            "m" | "medium" => Ok(ErrorCorrectionLevel::Medium),
+            "q" | "quartile" => Ok(ErrorCorrectionLevel::Quartile),
+            "h" | "high" => Ok(ErrorCorrectionLevel::High),
+            _ => Err(format!("Invalid Error Correction Level: {}", s))
+        }
+    }
+}
+
+
+impl std::fmt::Display for ErrorCorrectionLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let letter = match self {
+            ErrorCorrectionLevel::Low => "L",
+            ErrorCorrectionLevel::Medium => "M",
+            ErrorCorrectionLevel::Quartile => "Q",
+            ErrorCorrectionLevel::High => "H",
+        };
+        write!(f, "{}", letter)
     }
 }

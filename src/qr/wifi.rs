@@ -78,8 +78,26 @@ impl WifiQr {
             .replace('"', "\\\"")
     }
     
+
     pub fn to_qr_string(&self) -> String {
-        let mut res = String::new();
+        let base_length = "WIFI:T:;S:;P:;H:;;".len(); // 18 chars for structure
+        let security_length = match self.security {
+            SecurityType::None => "nopass".len(),
+            SecurityType::Wep => "WEP".len(),
+            SecurityType::Wpa2 | SecurityType::Wpa3 => "WPA".len(),
+        };
+        let hidden_length = if self.hidden { 4 } else { 5 }; // "true" or "false"
+        
+        // Estimate escaped string lengths (add 20% buffer for escaping)
+        let ssid_estimated = (self.ssid.len() as f32 * 1.2) as usize;
+        let password_estimated = self.password.as_ref()
+            .map(|p| (p.len() as f32 * 1.2) as usize)
+            .unwrap_or(0);
+        
+        let estimated_capacity = base_length + security_length + hidden_length + 
+                                ssid_estimated + password_estimated;
+
+        let mut res = String::with_capacity(estimated_capacity);
         res += "WIFI:T:";
 
         res += match self.security {
